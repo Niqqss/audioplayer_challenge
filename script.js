@@ -43,17 +43,36 @@ const sketch = () => {
 };
 
 const addListeners = () => {
+    // Add mouse event listener for desktop browsers
     window.addEventListener('mouseup', () => {
-        if (!audioContext) createAudio();
+        toggleAudio();
+    });
 
-        if (audio.paused) {
-            audio.play();
-        }
-        else {
-            audio.pause();
-        }
+    // Add touch event listeners for mobile devices
+    window.addEventListener('touchstart', () => {
+        toggleAudio();
+    });
+
+    window.addEventListener('touchend', () => {
+        toggleAudio();
+    });
+
+    window.addEventListener('touchcancel', () => {
+        toggleAudio();
     });
 };
+
+const toggleAudio = () => {
+    if (!audioContext) createAudio();
+
+    if (audio.paused) {
+        audio.play();
+    }
+    else {
+        audio.pause();
+    }
+};
+
 
 const createAudio = () => {
     audio = document.createElement('audio');
