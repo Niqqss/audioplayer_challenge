@@ -52,14 +52,6 @@ const addListeners = () => {
     window.addEventListener('touchstart', () => {
         toggleAudio();
     });
-
-    window.addEventListener('touchend', () => {
-        toggleAudio();
-    });
-
-    window.addEventListener('touchcancel', () => {
-        toggleAudio();
-    });
 };
 
 const toggleAudio = () => {
