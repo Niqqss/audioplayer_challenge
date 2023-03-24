@@ -28,14 +28,14 @@ const sketch = () => {
         for (let i = 0; i < bins.length; i++) {
             const bin = bins[i];
             const mapped = mapRange(audioData[bin], analyserNode.minDecibels, analyserNode.maxDecibels, 0, 1, true);
-            const radius = mapped * 200;
+            const radius = mapped * 250;
 
             context.save();
             context.translate(width * 0.5, height * 0.5);
 
             // Draw multiple copies of the lines with reduced opacity and a slight offset
             for (let j = 0; j < 5; j++) {
-                const alpha = (j + 1) / 5 * 0.1;
+                const alpha = (j + 1) / 5 * 0.15;
                 const offset = j - 2;
                 context.beginPath();
                 context.arc(offset, offset, radius, 0, Math.PI * 2);
@@ -75,7 +75,7 @@ const toggleAudio = () => {
 
 const createAudio = () => {
     audio = document.createElement('audio');
-    audio.src = 'audio/2.wav';
+    audio.src = 'audio/pourri2.mp3';
 
     audioContext = new AudioContext();
 
