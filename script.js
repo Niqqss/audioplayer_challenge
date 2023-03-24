@@ -1,8 +1,15 @@
 const canvas = document.querySelector('canvas');
 const context = canvas.getContext('2d');
 
-const width = 1080;
-const height = 1080;
+let width = canvas.width;
+let height = canvas.height;
+
+const resizeCanvas = () => {
+  canvas.width = canvas.offsetWidth;
+  canvas.height = canvas.offsetHeight;
+  width = canvas.width;
+  height = canvas.height;
+};
 
 let audio;
 let audioContext, audioData, sourceNode, analyserNode;
@@ -21,7 +28,7 @@ const sketch = () => {
         for (let i = 0; i < bins.length; i++) {
             const bin = bins[i];
             const mapped = mapRange(audioData[bin], analyserNode.minDecibels, analyserNode.maxDecibels, 0, 1, true);
-            const radius = mapped * 300;
+            const radius = mapped * 200;
 
             context.save();
             context.translate(width * 0.5, height * 0.5);
@@ -116,4 +123,7 @@ const start = async () => {
     animate();
 }
 
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
 start();
+

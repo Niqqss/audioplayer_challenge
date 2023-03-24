@@ -7,9 +7,15 @@
 body {
     margin: 0;
     line-height: 1.5;
+    overflow: hidden;
 }
 
 main {
     display: flex;
     justify-content: center;
+}
+
+canvas {
+    width: 100vw;
+    height: 100vh;
 }
