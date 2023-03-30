@@ -7,11 +7,45 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="style.css">
+    <script src="https://kit.fontawesome.com/cd6a5f940b.js" crossorigin="anonymous"></script>
 </head>
 
 <body>
     <main>
-        <canvas width="1080" height="1080"></canvas>
+        <h1>audio player</h1>
+        <div class="container-border">
+            <div class="audio-player">
+                <canvas width="1080" height="1080"></canvas>
+                <div class="top-info">
+                    <div class="top-info-content">
+                        <img src="assets/images/fantastic.jpg" alt="album thumbnail" class="thumbnail">
+                        <div class="playlist-container">
+                            <ul class="playlist"></ul>
+                        </div>
+                    </div>
+                    <button class="switch-content-btn"></button>
+                </div>
+                <div class="music-info">
+                    <h2 class="music-title"></h2>
+                    <h3 class="artist-name"></h3>
+                    <p class="current-index">
+                        <span>1</span>/4
+                    </p>
+                    <audio src="assets/audio/fantastic.mp3"></audio>
+                    <div class="progress-container">
+                        <div class="progress-bar"></div>
+                        <span class="time-indicator current-time">0:00</span>
+                        <span class="time-indicator duration-time">0:00</span>
+                    </div>
+                    <nav class="navigation">
+                        <button class="shuffle"><i class="fa-solid fa-shuffle"></i></button>
+                        <button class="prev-btn"><i class="fa-solid fa-backward"></i></button>
+                        <button class="play-btn"><i class="fa-solid fa-play"></i></button>
+                        <button class="next-btn"><i class="fa-solid fa-forward"></i></button>
+                    </nav>
+                </div>
+            </div>
+        </div>
     </main>
     <script src="script.js"></script>
 </body>
