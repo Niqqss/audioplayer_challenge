@@ -123,8 +123,8 @@ let currentMusicIndex = 1;
 function populateUI({ title, artist }) {
     musicTitle.textContent = title;
     artistName.textContent = artist;
-    thumbnail.src = `./assets/images/${title}.jpg`;
-    musicPlayer.src = `./assets/audio/${title}.mp3`;
+    thumbnail.src = `../assets/images/${title}.jpg`;
+    musicPlayer.src = `../assets/audio/${title}.mp3`;
     indexTxt.textContent = `${currentMusicIndex}/${musicsData.length}`;
 }
 
@@ -269,7 +269,7 @@ musicsData.forEach(musicData => {
     playlistItem.className = "playlist-item";
     const playlistItemThumbnail = document.createElement("img");
     playlistItemThumbnail.className = "playlist-item-thumbnail";
-    playlistItemThumbnail.src = `./assets/images/${musicData.title}.jpg`;
+    playlistItemThumbnail.src = `../assets/images/${musicData.title}.jpg`;
     playlistItem.appendChild(playlistItemThumbnail);
     const playlistItemInfo = document.createElement("h3");
     playlistItemInfo.className = "playlist-item-info";
