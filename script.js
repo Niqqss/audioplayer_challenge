@@ -27,7 +27,8 @@ const sketch = () => {
     const bins = [4, 12, 37, 165];
 
     return ({ context, width, height }) => {
-        context.fillStyle = 'black';
+        context.clearRect(0, 0, width, height);
+        context.fillStyle = 'transparent';
         context.fillRect(0, 0, width, height);
 
         if (!audioContext) return;
@@ -37,18 +38,18 @@ const sketch = () => {
         for (let i = 0; i < bins.length; i++) {
             const bin = bins[i];
             const mapped = mapRange(audioData[bin], analyserNode.minDecibels, analyserNode.maxDecibels, 0, 1, true);
-            const radius = mapped * 200;
+            const radius = mapped * 230;
 
             context.save();
             context.translate(width * 0.5, height * 0.5);
 
             // Draw multiple copies of the lines with reduced opacity and a slight offset
             for (let j = 0; j < 5; j++) {
-                const alpha = (j + 1) / 5 * 0.15;
+                const alpha = (j + 1) / 5 ;
                 const offset = j - 2;
                 context.beginPath();
                 context.arc(offset, offset, radius, 0, Math.PI * 2);
-                context.strokeStyle = `rgba(255, 255, 255, ${alpha})`;
+                context.strokeStyle = `rgba(25, 25, 25, ${alpha})`;
                 context.lineWidth = 10;
                 context.stroke();
             }
@@ -254,15 +255,13 @@ function playAShuffledSong() {
 
 // CODE PERSO A REPLACER
 
-const playlistContainer = document.querySelector('.playlist-container');
+const playlist = document.querySelector('.playlist');
 const switchContentBtn = document.querySelector('.switch-content-btn');
 
 switchContentBtn.addEventListener("click", () => {
-    playlistContainer.classList.toggle("visible");
+    playlist.classList.toggle("visible");
     thumbnail.classList.toggle("hidden");
 })
-
-const playlist = document.querySelector('.playlist');
 
 musicsData.forEach(musicData => {
     const playlistItem = document.createElement("li");
@@ -280,19 +279,22 @@ musicsData.forEach(musicData => {
 });
 
 const playlistItems = document.querySelectorAll('.playlist-item');
+let currentlyPlayingItem = null;
 
-playlistItems.forEach(playlistItem => {
-    const [title, artist] = playlistItem.textContent.split(" - ");
-    const musicData = { title, artist};
-
-    if (title === musicTitle.textContent) {
-        playlistItem.classList.toggle("currently-playing");
-    }
+playlistItems.forEach((playlistItem, index) => {
 
     playlistItem.addEventListener("click", () => {
-        playlistItem.classList.toggle("currently-playing");
-        populateUI(musicData);
+        if (currentlyPlayingItem !== null) {
+            currentlyPlayingItem.classList.remove("currently-playing");
+        }
+        const [title, artist] = playlistItem.textContent.split(" - ");
+        const itemData = { title, artist};
+        populateUI(itemData);
         if (!audioContext) initializeAudioAnalyzer();
         play();
+        if (index + 1 === musicsData[index].id) {
+            playlistItem.classList.add("currently-playing");
+            currentlyPlayingItem = playlistItem;
+        }
     });
 });

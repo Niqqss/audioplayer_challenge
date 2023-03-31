@@ -8,20 +8,25 @@
     <title>Document</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://kit.fontawesome.com/cd6a5f940b.js" crossorigin="anonymous"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap"
+        rel="stylesheet">
 </head>
 
 <body>
+    <img src="assets/images/music-front-color.png" alt="" class="background-image" id="music-note">
+    <img src="assets/images/headphone-front-premium.png" alt="" class="background-image" id="headphone">
     <main>
-        <h1>audio player</h1>
+        <h1>Audio player</h1>
         <div class="container-border">
             <div class="audio-player">
                 <canvas width="1080" height="1080"></canvas>
                 <div class="top-info">
                     <div class="top-info-content">
                         <img src="assets/images/Fantastic.jpg" alt="album thumbnail" class="thumbnail">
-                        <div class="playlist-container">
-                            <ul class="playlist"></ul>
-                        </div>
+                        <ul class="playlist"></ul>
                     </div>
                     <button class="switch-content-btn"></button>
                 </div>
@@ -29,7 +34,7 @@
                     <h2 class="music-title"></h2>
                     <h3 class="artist-name"></h3>
                     <p class="current-index">
-                        <span>1</span>/4
+                        <span>1</span>/6
                     </p>
                     <audio src="assets/audio/Fantastic.mp3"></audio>
                     <div class="progress-container">
