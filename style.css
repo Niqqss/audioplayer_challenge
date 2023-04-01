@@ -41,12 +41,17 @@ h1 {
     width: 50%;
     height: 65%;
     display: flex;
+    flex-wrap: wrap;
     justify-content: center;
     position: relative;
+    align-items: center;
+
 }
 
 canvas {
     padding: 2rem;
+    width: 420px;
+    height: 420px;
 }
 
 .thumbnail {
@@ -60,6 +65,21 @@ canvas {
     opacity: .6;
     box-shadow: 10px 10px 11px -8px rgba(0, 0, 0, 0.9);
     border: 1px solid rgba(255, 255, 255, 0.7);
+}
+
+.switch-btn {
+    display: none;
+    position: absolute;
+    width: 100px;
+    height: 20px;
+    bottom : 100px;
+    left : 50%;
+    transform: translateX(-50%);
+    background-color: #e8e8e8;
+    border: 1px solid #e8e8e8;
+    transition: all .3s;
+    box-shadow: 6px 6px 12px #c5c5c5,
+        -6px -6px 12px #ffffff;
 }
 
 .top-info {
@@ -343,10 +363,6 @@ button i {
         height: 30px;
     }
 
-    .thumbnail-container {
-        align-items: center;
-    }
-
     canvas {
         width: 420px;
         height: 420px;
@@ -371,12 +387,16 @@ button i {
     }
  
     canvas {
-     width: 450px;
-     height: 450px;
+     width: 350px;
+     height: 350px;
     }
 
     .thumbnail {
-        width: 350px;
+        width: 300px;
+    }
+
+    .switch-btn {
+        display: block;
     }
     
  }
