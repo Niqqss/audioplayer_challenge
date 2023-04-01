@@ -1,5 +1,5 @@
 const musicsData = [
-    { title: "Fantastic", artist: "Riovaz", id: 1 },
+    { title: "I Feel Fantastic", artist: "Riovaz", id: 1 },
     { title: "Gangsta Boo", artist: "Ice Spice", id: 2 },
     { title: "Tranquillement", artist: "Houdi", id: 3 },
     { title: "Waves", artist: "Freddie Joachim", id: 4 },
@@ -154,14 +154,6 @@ const indexTxt = document.querySelector(".current-index");
 
 let currentMusicIndex = 1;
 
-function populateUI({ title, artist }) {
-    musicTitle.textContent = title;
-    artistName.textContent = artist;
-    thumbnail.src = `assets/images/${title}.jpg`;
-    musicPlayer.src = `assets/audio/${title}.mp3`;
-    indexTxt.textContent = `${currentMusicIndex}/${musicsData.length}`;
-}
-
 populateUI(musicsData[currentMusicIndex - 1]);
 
 const playBtn = document.querySelector('.play-btn');
@@ -240,91 +232,128 @@ function setProgress(e) {
     musicPlayer.currentTime = (x / progressWidth) * totalDuration;
 }
 
-const shuffleBtn = document.querySelector(".shuffle");
-shuffleBtn.addEventListener("click", switchShuffle);
-
-let shuffle = false;
-function switchShuffle() {
-    // MODIFIER POUR LAFFICHAGE DU BOUTON SHUFFLE
-    shuffleBtn.classList.toggle("active");
-    shuffle = !shuffle;
-}
-
 const nextBtn = document.querySelector('.next-btn');
 const prevBtn = document.querySelector('.prev-btn');
 
 [prevBtn, nextBtn].forEach(btn => btn.addEventListener("click", changeSong));
 musicPlayer.addEventListener("ended", changeSong);
 
-function changeSong(e) {
-    if (shuffle) {
-        playAShuffledSong();
-        return;
-    }
+const shuffleButtons = document.querySelectorAll(".shuffle-btn");
+shuffleButtons.forEach(shuffleBtn => {
+    shuffleBtn.addEventListener("click", shufflePlaylist);
+});
 
+let shuffle = false;
+let shuffledMusicsData = musicsData.slice();
+
+function populateUI({ title, artist }) {
+    const formattedTitle = title.replace(/ /g, '-');
+    musicTitle.textContent = title;
+    artistName.textContent = artist;
+    thumbnail.src = `assets/images/${formattedTitle}.jpg`;
+    musicPlayer.src = `assets/audio/${formattedTitle}.mp3`;
+    indexTxt.textContent = `${currentMusicIndex}/${musicsData.length}`;
+}
+
+function shufflePlaylist() {
+    shuffleButtons.forEach(shuffleBtn => {
+        shuffleBtn.classList.toggle("active");
+    });
+    shuffle = !shuffle;
+    if (shuffle) {
+        const currentMusic = shuffledMusicsData[currentMusicIndex - 1];
+        shuffledMusicsData = musicsData.slice().sort(() => Math.random() - 0.5);
+        const currentIndexInShuffled = shuffledMusicsData.findIndex(musicData => musicData.id === currentMusic.id);
+        if (currentIndexInShuffled !== -1) {
+            shuffledMusicsData.splice(currentIndexInShuffled, 1);
+            shuffledMusicsData.unshift(currentMusic);
+        }
+        currentMusicIndex = 1;
+        indexTxt.textContent = `${currentMusicIndex}/${musicsData.length}`;
+    } else {
+        const currentMusic = shuffledMusicsData[currentMusicIndex - 1];
+        shuffledMusicsData = musicsData.slice();
+        currentMusicIndex = shuffledMusicsData.findIndex(musicData => musicData.id === currentMusic.id) + 1;
+        indexTxt.textContent = `${currentMusicIndex}/${musicsData.length}`;
+    }
+    displayPlaylist();
+    if (currentlyPlayingItem !== null) {
+        currentlyPlayingItem.classList.remove("currently-playing");
+    }
+    currentlyPlayingItem = playlistItems[currentMusicIndex - 1];
+    currentlyPlayingItem.classList.add("currently-playing");
+}
+
+function changeSong(e) {
     e.target.classList.contains("next-btn") || e.type === "ended" ? currentMusicIndex++ : currentMusicIndex--;
 
     if (currentMusicIndex < 1) {
-        currentMusicIndex = musicsData.length;
+        currentMusicIndex = shuffledMusicsData.length;
     }
-    else if (currentMusicIndex > musicsData.length) {
+    else if (currentMusicIndex > shuffledMusicsData.length) {
         currentMusicIndex = 1;
     }
 
-    populateUI(musicsData[currentMusicIndex - 1]);
+    populateUI(shuffledMusicsData[currentMusicIndex - 1]);
     if (!audioContext) initializeAudioAnalyzer();
     play();
+
+    if (currentlyPlayingItem !== null) {
+        currentlyPlayingItem.classList.remove("currently-playing");
+    }
+    currentlyPlayingItem = playlistItems[currentMusicIndex - 1];
+    currentlyPlayingItem.classList.add("currently-playing");
 }
-
-function playAShuffledSong() {
-    const musicsWithoutCurrentSong = musicsData.filter(el => el.id !== currentMusicIndex);
-    const randomMusic = musicsWithoutCurrentSong[Math.trunc(Math.random() * musicsWithoutCurrentSong.length)];
-
-    currentMusicIndex = randomMusic.id;
-    populateUI(randomMusic);
-    if (!audioContext) initializeAudioAnalyzer();
-    play();
-}
-
-// CODE PERSO A REPLACER
 
 const playlist = document.querySelector('.playlist');
+let playlistItems = null;
+let currentlyPlayingItem = null;
 
-musicsData.forEach(musicData => {
+function displayPlaylist() {
+  playlist.innerHTML = ""; // Clear the current playlist
+  shuffledMusicsData.forEach((musicData, index) => {
     const playlistItem = document.createElement("li");
     playlistItem.className = "playlist-item";
     const playlistItemThumbnail = document.createElement("img");
     playlistItemThumbnail.className = "playlist-item-thumbnail";
-    playlistItemThumbnail.src = `assets/images/${musicData.title}.jpg`;
+    formattedTitle = musicData.title.replace(/ /g, '-');
+    playlistItemThumbnail.src = `assets/images/${formattedTitle}.jpg`;
     playlistItem.appendChild(playlistItemThumbnail);
     const playlistItemInfo = document.createElement("h3");
     playlistItemInfo.className = "playlist-item-info";
     playlistItemInfo.textContent = musicData.title + " - ";
     playlistItemInfo.textContent += musicData.artist;
     playlistItem.appendChild(playlistItemInfo);
+    playlistItem.setAttribute("data-index", index);
     playlist.appendChild(playlistItem);
-});
+  });
+  playlistItems = document.querySelectorAll('.playlist-item');
+  setupPlaylist();
+}
 
-const playlistItems = document.querySelectorAll('.playlist-item');
-let currentlyPlayingItem = null;
-
-playlistItems.forEach((playlistItem, index) => {
-
+function setupPlaylist() {
+  playlistItems.forEach((playlistItem) => {
     playlistItem.addEventListener("click", () => {
-        if (currentlyPlayingItem !== null) {
-            currentlyPlayingItem.classList.remove("currently-playing");
-        }
-        const [title, artist] = playlistItem.textContent.split(" - ");
-        const itemData = { title, artist };
-        populateUI(itemData);
-        if (!audioContext) initializeAudioAnalyzer();
-        play();
-        if (index + 1 === musicsData[index].id) {
-            playlistItem.classList.add("currently-playing");
-            currentlyPlayingItem = playlistItem;
-        }
+      if (currentlyPlayingItem !== null) {
+        currentlyPlayingItem.classList.remove("currently-playing");
+      }
+      const itemIndex = playlistItem.getAttribute("data-index");
+      currentMusicIndex = parseInt(itemIndex) + 1;
+      const itemData = shuffledMusicsData[itemIndex];
+      populateUI(itemData);
+      if (!audioContext) initializeAudioAnalyzer();
+      play();
+      playlistItem.classList.add("currently-playing");
+      currentlyPlayingItem = playlistItem;
     });
-});
+  });
+}
+
+displayPlaylist();
+
+const firstPlaylistItem = document.querySelector('.playlist-item');
+firstPlaylistItem.classList.add('currently-playing');
+currentlyPlayingItem = firstPlaylistItem;
 
 const volumeControl = document.querySelector(".volume-control");
 volumeControl.addEventListener("mousemove", function (e) {

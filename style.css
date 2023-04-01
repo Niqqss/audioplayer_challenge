@@ -71,19 +71,6 @@ canvas {
     border: 1px solid rgba(255, 255, 255, 0.7);
 }
 
-.switch-btn {
-    display: none;
-    position: absolute;
-    width: 100px;
-    bottom : 5%;
-    padding : .8rem;
-    background-color: #e8e8e8;
-    border: 1px solid #e8e8e8;
-    transition: all .3s;
-    box-shadow: 6px 6px 12px #c5c5c5,
-        -6px -6px 12px #ffffff;
-}
-
 .top-info {
     width: 50%;
     height: 65%;
@@ -244,9 +231,14 @@ button i {
     pointer-events: none;
 }
 
-.shuffle {
+.shuffle-btn {
     position: absolute;
     left: 10%;
+    color: rgba(0, 0, 0, 0.4);
+}
+
+.mobile {
+    display: none;
 }
 
 .play-btn {
@@ -255,10 +247,7 @@ button i {
     border-radius: 100%;
 }
 
-.play-btn,
-.prev-btn,
-.next-btn,
-.shuffle {
+.navigation button {
     background-color: #e8e8e8;
     border: 1px solid #e8e8e8;
     transition: all .3s;
@@ -266,26 +255,28 @@ button i {
         -6px -6px 12px #ffffff;
 }
 
-.play-btn:hover,
-.prev-btn:hover,
-.next-btn:hover,
-.shuffle:hover {
+.navigation button:hover {
     border: 1px solid white;
     box-shadow: 4px 4px 12px #c5c5c5,
         -4px -4px 12px #ffffff;
     background-color: rgba(0, 0, 0, 0.1);
 }
 
-.volume-control-container {
+.more-options {
     position: absolute;
     right: 10%;
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: .6rem;
 }
 
-.volume-control-container i {
+.volume-control-container {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+}
+
+.more-options i {
     color: rgba(0, 0, 0, 0.4);
 }
 
@@ -308,7 +299,11 @@ button i {
 }
 
 .active {
-    background-color: rgba(255, 0, 0, 0.1);
+    background-color: rgba(255, 0, 0, 0.1) !important;
+}
+
+.active i {
+    color : black;
 }
 
 .border-container {
@@ -339,6 +334,7 @@ button i {
 }
 
 @media screen and (max-width : 1024px) {
+
     .border-container {
         height: 100vh;
     }
@@ -369,6 +365,28 @@ button i {
         width: 420px;
         height: 420px;
     }
+
+    .music-info {
+        padding : 0;
+    }
+
+    .thumbnail-container {
+        height: 55%;
+    }
+
+    .top-info {
+        height: 55%;
+    }
+
+    .music-info {
+        height: 45%;
+    }
+
+    .progress-container {
+        margin : 3rem;
+    }
+
+    
 }
 
 @media screen and (max-width : 768px) {
@@ -381,24 +399,59 @@ button i {
     }
 
     .top-info {
-     display: none;
+        display: none;
     }
- 
+
     .thumbnail-container {
-     width: 100%;
+        width: 100%;
     }
- 
+
     canvas {
-     width: 350px;
-     height: 350px;
+        width: 350px;
+        height: 350px;
     }
 
     .thumbnail {
         width: 300px;
     }
 
-    .switch-btn {
-        display: block;
+
+    .navigation {
+        display: flex;
+        flex-wrap: wrap;
+        margin: 1rem;
     }
-    
- }
+
+    .shuffle-btn {
+        position: static;
+        display: none;
+    }
+
+    .more-options {
+        position: static;
+        display: flex;
+        gap: 1.5rem;
+        width: 100%;
+    }
+
+    .mobile {
+        display: block;
+        border-radius: 15px;
+    }
+
+    .progress-container {
+        margin: 20px 0;
+    }
+
+    .play-btn {
+        height: 60px;
+        width: 60px;
+        border-radius: 100%;
+    }
+
+    .navigation button {
+        padding: .8rem;
+        font-size: 14px;
+    }
+
+}
