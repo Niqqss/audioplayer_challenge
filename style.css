@@ -45,13 +45,17 @@ h1 {
     justify-content: center;
     position: relative;
     align-items: center;
-
 }
 
 canvas {
     padding: 2rem;
     width: 420px;
     height: 420px;
+    background-image: url("assets/images/disc.png");
+    background-position: center;
+    background-size: 70%;
+    background-repeat: no-repeat;
+    opacity: .8;
 }
 
 .thumbnail {
@@ -71,10 +75,8 @@ canvas {
     display: none;
     position: absolute;
     width: 100px;
-    height: 20px;
-    bottom : 100px;
-    left : 50%;
-    transform: translateX(-50%);
+    bottom : 5%;
+    padding : .8rem;
     background-color: #e8e8e8;
     border: 1px solid #e8e8e8;
     transition: all .3s;
