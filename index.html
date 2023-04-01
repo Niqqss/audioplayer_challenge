@@ -19,16 +19,16 @@
     <img src="assets/images/music-front-color.png" alt="" class="background-image" id="music-note">
     <img src="assets/images/headphone-front-premium.png" alt="" class="background-image" id="headphone">
     <main>
-        <h1>Audio player</h1>
-        <div class="container-border">
+        <div class="border-container">
             <div class="audio-player">
-                <canvas width="1080" height="1080"></canvas>
+                <div class="thumbnail-container">
+                    <img src="assets/images/Fantastic.jpg" alt="album thumbnail" class="thumbnail">
+                    <canvas width="1450" height="1450"></canvas>
+                </div>
                 <div class="top-info">
                     <div class="top-info-content">
-                        <img src="assets/images/Fantastic.jpg" alt="album thumbnail" class="thumbnail">
                         <ul class="playlist"></ul>
                     </div>
-                    <button class="switch-content-btn"></button>
                 </div>
                 <div class="music-info">
                     <h2 class="music-title"></h2>
@@ -47,6 +47,11 @@
                         <button class="prev-btn"><i class="fa-solid fa-backward"></i></button>
                         <button class="play-btn"><i class="fa-solid fa-play"></i></button>
                         <button class="next-btn"><i class="fa-solid fa-forward"></i></button>
+                        <div class="volume-control-container">
+                            <i class="fa-solid fa-volume-off"></i>
+                            <input type="range" class="volume-control">
+                            <i class="fa-solid fa-volume-high"></i>
+                        </div>
                     </nav>
                 </div>
             </div>

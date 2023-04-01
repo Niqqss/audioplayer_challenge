@@ -9,6 +9,10 @@ body {
     line-height: 1.5;
     overflow: hidden;
     font-family: 'Lato', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
 }
 
 main {
@@ -30,15 +34,36 @@ h1 {
     background: rgba(231, 231, 231, 0.3);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
+    box-shadow: inset 16px 16px 7px -7px rgba(0, 0, 0, 0.2), inset -10px -11px 11px -7px rgba(0, 0, 0, 0.2);
+}
+
+.thumbnail-container {
+    width: 50%;
+    height: 65%;
+    display: flex;
+    justify-content: center;
+    position: relative;
 }
 
 canvas {
-    width: 45%;
-    height: 65%;
+    padding: 2rem;
+}
+
+.thumbnail {
+    position: absolute;
+    z-index: -1;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 420px;
+    border-radius: 25px;
+    opacity: .6;
+    box-shadow: 10px 10px 11px -8px rgba(0, 0, 0, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.7);
 }
 
 .top-info {
-    width: 55%;
+    width: 50%;
     height: 65%;
     display: flex;
     justify-content: center;
@@ -50,8 +75,8 @@ canvas {
     content: '';
     position: absolute;
     height: 50%;
-    border-left: 4px solid rgba(0, 0, 0, 0.1);
-    left: 75px;
+    border-left: 4px solid rgba(0, 0, 0, 0.15);
+    left: 0;
     border-radius: 5px;
 }
 
@@ -61,16 +86,8 @@ canvas {
     padding: 10px 10px 10px 10px;
     box-shadow: inset 10px 10px 4px -5px rgba(0, 0, 0, 0.1);
     border: 2px solid white;
-    width: 450px;
-    height: 450px;
-}
-
-.thumbnail {
-    display: block;
-    border-radius: 15px;
-    width: 100%;
-    box-shadow: 10px 10px 11px -8px rgba(0, 0, 0, 0.1);
-    border: 1px solid rgba(0, 0, 0, 0.05);
+    width: 420px;
+    height: 420px;
 }
 
 .playlist {
@@ -78,7 +95,6 @@ canvas {
     margin: 0;
     padding: 0;
     list-style-type: none;
-    display: none;
     border-radius: 15px;
     box-shadow: 10px 10px 11px -8px rgba(0, 0, 0, 0.1);
     border: 1px solid rgba(0, 0, 0, 0.05);
@@ -98,7 +114,8 @@ canvas {
 .playlist-item:not(:last-child):before {
     content: '';
     position: absolute;
-    left: 20%;
+    left: 50%;
+    transform: translateX(-50%);
     bottom: 0;
     width: 60%;
     border-bottom: 1.5px solid rgba(185, 185, 185, 0.5);
@@ -135,25 +152,6 @@ canvas {
 
 .currently-playing {
     background-color: rgba(255, 0, 0, 0.1);
-}
-
-.switch-content-btn {
-    width: 30px;
-    height: 100px;
-    position: absolute;
-    top: 40%;
-    right: 15%;
-    background-color: #e8e8e8;
-    border: 1px solid #e8e8e8;
-    transition: all .3s;
-    box-shadow: 6px 6px 12px #c5c5c5,
-        -6px -6px 12px #ffffff;
-}
-
-.switch-content-btn:hover {
-    border: 1px solid white;
-    box-shadow: 4px 4px 12px #c5c5c5,
-        -4px -4px 12px #ffffff;
 }
 
 .music-info {
@@ -238,8 +236,7 @@ button i {
 .play-btn,
 .prev-btn,
 .next-btn,
-.shuffle
- {
+.shuffle {
     background-color: #e8e8e8;
     border: 1px solid #e8e8e8;
     transition: all .3s;
@@ -257,14 +254,44 @@ button i {
     background-color: rgba(0, 0, 0, 0.1);
 }
 
+.volume-control-container {
+    position: absolute;
+    right: 10%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: .6rem;
+}
+
+.volume-control-container i {
+    color: rgba(0, 0, 0, 0.4);
+}
+
+.volume-control {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.volume-control::-webkit-slider-runnable-track {
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+}
+
+.volume-control::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 15px;
+    height: 10px;
+    background: black;
+    border-radius: 5px;
+}
+
 .active {
     background-color: rgba(255, 0, 0, 0.1);
 }
 
-.container-border {
+.border-container {
     border: 10px ridge black;
     border-radius: 10px;
-    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.7);
 }
 
 .background-image {
@@ -275,7 +302,7 @@ button i {
     width: 300px;
     height: 300px;
     transform: rotate(30deg);
-    left: 7%;
+    left: 12%;
     top: 39%;
     position: fixed;
 }
@@ -284,10 +311,72 @@ button i {
     width: 200px;
     height: 200px;
     top: 230px;
-    right: 230px;
+    right: 300px;
     transform: rotate(-70deg);
     position: fixed;
 }
 
-@media screen and (max-width : 1080px) {
+@media screen and (max-width : 1024px) {
+    .border-container {
+        height: 100vh;
+    }
+
+    .audio-player {
+        height: 100%;
+    }
+
+    .thumbnail {
+        width: 320px;
+    }
+
+    .top-info-content {
+        width: 320px;
+        height: 320px;
+    }
+
+    .playlist-item {
+        font-size: 12px;
+    }
+
+    .playlist-item-thumbnail {
+        width: 30px;
+        height: 30px;
+    }
+
+    .thumbnail-container {
+        align-items: center;
+    }
+
+    canvas {
+        width: 420px;
+        height: 420px;
+    }
 }
+
+@media screen and (max-width : 768px) {
+    .border-container {
+        border: none;
+    }
+
+    .audio-player {
+        box-shadow: none;
+    }
+
+    .top-info {
+     display: none;
+    }
+ 
+    .thumbnail-container {
+     width: 100%;
+    }
+ 
+    canvas {
+     width: 400px;
+     height: 400px;
+    }
+
+    .thumbnail {
+        width: 400px;
+    }
+    
+ }
