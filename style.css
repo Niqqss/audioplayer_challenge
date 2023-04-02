@@ -485,11 +485,11 @@ button i {
 
     .show-playlist {
         display: flex;
-        animation: 1s showPlaylist forwards;
+        animation: 1s ease-out showPlaylist forwards;
     }
 
     .hide-playlist {
-        animation: hidePlaylist 1s forwards;
+        animation: 1s ease-in hidePlaylist forwards;
     }
 
     @keyframes showPlaylist {
