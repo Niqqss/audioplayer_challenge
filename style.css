@@ -19,6 +19,7 @@ main {
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
+    position: relative;
 }
 
 h1 {
@@ -35,6 +36,7 @@ h1 {
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     box-shadow: inset 16px 16px 7px -7px rgba(0, 0, 0, 0.2), inset -10px -11px 11px -7px rgba(0, 0, 0, 0.2);
+    padding: 2rem 0;
 }
 
 .thumbnail-container {
@@ -216,7 +218,9 @@ p {
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 2rem;
+    column-gap: 2rem;
+    row-gap: 1rem;
+    margin-top: 1rem;
 }
 
 button {
@@ -229,12 +233,6 @@ button {
 
 button i {
     pointer-events: none;
-}
-
-.shuffle-btn {
-    position: absolute;
-    left: 10%;
-    color: rgba(0, 0, 0, 0.4);
 }
 
 .mobile {
@@ -253,6 +251,7 @@ button i {
     transition: all .3s;
     box-shadow: 6px 6px 12px #c5c5c5,
         -6px -6px 12px #ffffff;
+    color: black;
 }
 
 .navigation button:hover {
@@ -260,6 +259,12 @@ button i {
     box-shadow: 4px 4px 12px #c5c5c5,
         -4px -4px 12px #ffffff;
     background-color: rgba(0, 0, 0, 0.1);
+}
+
+.shuffle-btn {
+    position: absolute;
+    left: 10%;
+    color: rgba(0, 0, 0, 0.4) !important;
 }
 
 .more-options {
@@ -303,7 +308,7 @@ button i {
 }
 
 .active i {
-    color : black;
+    color: black;
 }
 
 .border-container {
@@ -319,16 +324,16 @@ button i {
     width: 300px;
     height: 300px;
     transform: rotate(30deg);
-    left: 12%;
-    top: 39%;
+    left: 13%;
+    bottom: 30%;
     position: fixed;
 }
 
 #headphone {
     width: 200px;
     height: 200px;
-    top: 230px;
-    right: 300px;
+    top: 15%;
+    right: 17%;
     transform: rotate(-70deg);
     position: fixed;
 }
@@ -367,7 +372,7 @@ button i {
     }
 
     .music-info {
-        padding : 0;
+        padding: 0;
     }
 
     .thumbnail-container {
@@ -383,10 +388,19 @@ button i {
     }
 
     .progress-container {
-        margin : 3rem;
+        margin: 3rem;
     }
 
-    
+    #music-note {
+        left: -15%;
+        bottom: 30%;
+    }
+
+    #headphone {
+        top: 10%;
+        right: -8%;
+    }
+
 }
 
 @media screen and (max-width : 768px) {
@@ -419,7 +433,6 @@ button i {
     .navigation {
         display: flex;
         flex-wrap: wrap;
-        margin: 1rem;
     }
 
     .shuffle-btn {

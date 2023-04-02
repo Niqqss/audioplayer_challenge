@@ -30,7 +30,7 @@ let lineWidth, bin, mapped, phi;
 
 let prevTime = 0;
 let angle = 0;
-const angularVelocity = 0.00004;
+const angularVelocity = 0.00006;
 
 for (let i = 0; i < numCircles * numSlices; i++) {
     bin = Math.floor(Math.random() * 61) + 4;
