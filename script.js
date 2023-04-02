@@ -1,10 +1,10 @@
 const musicsData = [
     { title: "I Feel Fantastic", artist: "Riovaz", id: 1 },
-    { title: "Gangsta Boo", artist: "Ice Spice", id: 2 },
+    { title: "Bas Monde", artist: "La Fève", id: 2 },
     { title: "Tranquillement", artist: "Houdi", id: 3 },
     { title: "Waves", artist: "Freddie Joachim", id: 4 },
     { title: "Massage Situation", artist: "Flying Lotus", id: 5 },
-    { title: "Cangaiba", artist: "Sango", id: 6 },
+    { title: "Cangaíba to 7 Mile", artist: "Sango", id: 6 },
 ];
 
 const canvas = document.querySelector('canvas');
@@ -278,10 +278,12 @@ function shufflePlaylist() {
     }
     displayPlaylist();
     if (currentlyPlayingItem !== null) {
-        currentlyPlayingItem.classList.remove("currently-playing");
+        currentlyPlayingItem.querySelector('img').classList.remove("hidden")
+        currentlyPlayingItem.querySelector(".loading").classList.remove("visible")
     }
     currentlyPlayingItem = playlistItems[currentMusicIndex - 1];
-    currentlyPlayingItem.classList.add("currently-playing");
+    currentlyPlayingItem.querySelector('img').classList.add("hidden")
+    currentlyPlayingItem.querySelector(".loading").classList.add("visible")
 }
 
 function changeSong(e) {
@@ -299,10 +301,12 @@ function changeSong(e) {
     play();
 
     if (currentlyPlayingItem !== null) {
-        currentlyPlayingItem.classList.remove("currently-playing");
+        currentlyPlayingItem.querySelector('img').classList.remove("hidden")
+        currentlyPlayingItem.querySelector(".loading").classList.remove("visible")
     }
     currentlyPlayingItem = playlistItems[currentMusicIndex - 1];
-    currentlyPlayingItem.classList.add("currently-playing");
+    currentlyPlayingItem.querySelector('img').classList.add("hidden")
+    currentlyPlayingItem.querySelector(".loading").classList.add("visible")
 }
 
 const playlist = document.querySelector('.playlist');
@@ -310,49 +314,60 @@ let playlistItems = null;
 let currentlyPlayingItem = null;
 
 function displayPlaylist() {
-  playlist.innerHTML = ""; // Clear the current playlist
-  shuffledMusicsData.forEach((musicData, index) => {
-    const playlistItem = document.createElement("li");
-    playlistItem.className = "playlist-item";
-    const playlistItemThumbnail = document.createElement("img");
-    playlistItemThumbnail.className = "playlist-item-thumbnail";
-    formattedTitle = musicData.title.replace(/ /g, '-');
-    playlistItemThumbnail.src = `assets/images/${formattedTitle}.jpg`;
-    playlistItem.appendChild(playlistItemThumbnail);
-    const playlistItemInfo = document.createElement("h3");
-    playlistItemInfo.className = "playlist-item-info";
-    playlistItemInfo.textContent = musicData.title + " - ";
-    playlistItemInfo.textContent += musicData.artist;
-    playlistItem.appendChild(playlistItemInfo);
-    playlistItem.setAttribute("data-index", index);
-    playlist.appendChild(playlistItem);
-  });
-  playlistItems = document.querySelectorAll('.playlist-item');
-  setupPlaylist();
+    playlist.innerHTML = ""; // Clear the current playlist
+    shuffledMusicsData.forEach((musicData, index) => {
+        const playlistItem = document.createElement("li");
+        playlistItem.setAttribute("data-index", index);
+        playlistItem.className = "playlist-item";
+        const playlistItemThumbnail = document.createElement("img");
+        playlistItemThumbnail.className = "playlist-item-thumbnail";
+        formattedTitle = musicData.title.replace(/ /g, '-');
+        playlistItemThumbnail.src = `assets/images/${formattedTitle}.jpg`;
+        playlistItem.appendChild(playlistItemThumbnail);
+        const playlistItemInfo = document.createElement("h3");
+        playlistItemInfo.className = "playlist-item-info";
+        playlistItemInfo.textContent = musicData.title + " - ";
+        playlistItemInfo.textContent += musicData.artist;
+        const loadingDiv = document.createElement("div");
+        loadingDiv.className = "loading";
+        for (let i = 0; i < 4; i++) {
+            const loadDiv = document.createElement("div");
+            loadDiv.className = "load";
+            loadingDiv.appendChild(loadDiv);
+        }
+        playlistItem.appendChild(loadingDiv);
+        playlistItem.appendChild(playlistItemInfo);
+        playlist.appendChild(playlistItem);
+    });
+    playlistItems = document.querySelectorAll('.playlist-item');
+    setupPlaylist();
 }
 
 function setupPlaylist() {
-  playlistItems.forEach((playlistItem) => {
-    playlistItem.addEventListener("click", () => {
-      if (currentlyPlayingItem !== null) {
-        currentlyPlayingItem.classList.remove("currently-playing");
-      }
-      const itemIndex = playlistItem.getAttribute("data-index");
-      currentMusicIndex = parseInt(itemIndex) + 1;
-      const itemData = shuffledMusicsData[itemIndex];
-      populateUI(itemData);
-      if (!audioContext) initializeAudioAnalyzer();
-      play();
-      playlistItem.classList.add("currently-playing");
-      currentlyPlayingItem = playlistItem;
+    playlistItems.forEach((playlistItem) => {
+        playlistItem.addEventListener("click", () => {
+            if (currentlyPlayingItem !== null) {
+                currentlyPlayingItem.querySelector('img').classList.remove("hidden")
+                currentlyPlayingItem.querySelector(".loading").classList.remove("visible")
+            }
+            const itemIndex = playlistItem.getAttribute("data-index");
+            currentMusicIndex = parseInt(itemIndex) + 1;
+            const itemData = shuffledMusicsData[itemIndex];
+            populateUI(itemData);
+            if (!audioContext) initializeAudioAnalyzer();
+            play();
+            playlistItem.querySelector('img').classList.add("hidden")
+            playlistItem.querySelector(".loading").classList.add("visible")
+            currentlyPlayingItem = playlistItem;
+        });
     });
-  });
 }
 
 displayPlaylist();
 
 const firstPlaylistItem = document.querySelector('.playlist-item');
-firstPlaylistItem.classList.add('currently-playing');
+firstPlaylistItem.querySelector('img').classList.add("hidden")
+firstPlaylistItem.querySelector(".loading").classList.add("visible")
 currentlyPlayingItem = firstPlaylistItem;
 
 const volumeControl = document.querySelector(".volume-control");

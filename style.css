@@ -141,7 +141,8 @@ canvas {
 }
 
 .playlist-item:hover {
-    background-color: lightblue;
+    box-shadow: inset 4px 10px 15px -3px rgba(0,0,0,0.08),inset 0px -6px 15px -3px rgba(0,0,0,0.08);
+    background-color: rgba(33, 104, 196, 0.01)
 }
 
 .playlist-item-thumbnail {
@@ -151,18 +152,6 @@ canvas {
 
 .playlist-item-info {
     font-weight: 400;
-}
-
-.visible {
-    display: block;
-}
-
-.hidden {
-    display: none;
-}
-
-.currently-playing {
-    background-color: rgba(255, 0, 0, 0.1);
 }
 
 .music-info {
@@ -304,11 +293,13 @@ button i {
 }
 
 .active {
-    background-color: rgba(255, 0, 0, 0.1) !important;
+    background-color: white !important;
+    box-shadow: 6px 6px 12px #c5c5c5,
+        -6px -6px 12px #ffffff, inset 0px 0px 20px 0px rgba(0,0,0,0.3) !important;
 }
 
 .active i {
-    color: black;
+    color : rgba(255, 0, 0, 0.7)
 }
 
 .border-container {
@@ -336,6 +327,66 @@ button i {
     right: 17%;
     transform: rotate(-70deg);
     position: fixed;
+}
+
+.loading {
+    margin-top: 1em;
+    display: none;
+    max-height: 10px;
+    transform: rotate(180deg);
+    width: 40px;
+}
+
+.load {
+    width: 2px;
+    height: 33px;
+    background-color: rgba(255, 0, 0, 0.5);
+    animation: 1s playingAnimation infinite;
+    border-radius: 5px;
+    margin: 0.1em;
+}
+
+.load:nth-child(1) {
+    animation-delay: 0.2s;
+}
+
+.load:nth-child(2) {
+    animation-delay: 0.4s;
+}
+
+.load:nth-child(3) {
+    animation-delay: 0.6s;
+}
+
+.visible {
+    display: flex;
+    justify-content: center;
+}
+
+.hidden {
+    display: none;
+}
+
+.currently-playing {
+    background-color: rgba(255, 0, 0, 0.05);
+}
+
+@keyframes playingAnimation {
+    0% {
+        height: 0.2em;
+    }
+
+    25% {
+        height: 0.7em;
+    }
+
+    50% {
+        height: 1.5em;
+    }
+
+    100% {
+        height: 0.2em;
+    }
 }
 
 @media screen and (max-width : 1024px) {
