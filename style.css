@@ -389,7 +389,6 @@ button i {
 }
 
 @media screen and (max-width : 1024px) {
-
     .border-container {
         height: 100vh;
     }
@@ -450,7 +449,6 @@ button i {
         top: 10%;
         right: -8%;
     }
-
 }
 
 @media screen and (max-width : 768px) {
@@ -480,6 +478,10 @@ button i {
         width: 90%;
     }
 
+    .playlist-item {
+        font-size: 14px;
+    }
+
     .show-playlist {
         display: flex;
         animation: 1s showPlaylist forwards;
@@ -501,13 +503,13 @@ button i {
 
     @keyframes hidePlaylist {
         0% {
-          bottom: 35%;
+            bottom: 35%;
         }
-        100% {
-          bottom: -60%;
-        }
-      }
 
+        100% {
+            bottom: -60%;
+        }
+    }
 
     .thumbnail-container {
         width: 100%;
@@ -521,7 +523,6 @@ button i {
     .thumbnail {
         width: 300px;
     }
-
 
     .navigation {
         display: flex;
@@ -560,5 +561,4 @@ button i {
         padding: .8rem;
         font-size: 14px;
     }
-
 }
