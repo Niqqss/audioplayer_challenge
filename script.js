@@ -1,3 +1,4 @@
+// Constants
 const musicsData = [
     { title: "I Feel Fantastic", artist: "Riovaz", id: 1 },
     { title: "Bas Monde", artist: "La Fève", id: 2 },
@@ -6,159 +7,42 @@ const musicsData = [
     { title: "Massage Situation", artist: "Flying Lotus", id: 5 },
     { title: "Cangaíba to 7 Mile", artist: "Sango", id: 6 },
 ];
-
-const canvas = document.querySelector('canvas');
-const context = canvas.getContext('2d');
-
-let width = canvas.width;
-let height = canvas.height;
-
-let audio;
-let audioContext, audioData, sourceNode, analyserNode;
-let minDb, maxDb;
-
-const numCircles = 5;
-const numSlices = 1;
-const slice = Math.PI * 2 / numSlices;
-const radius = 200;
-
-const bins = [];
-const lineWidths = [];
-const rotationOffsets = [];
-
-let lineWidth, bin, mapped, phi;
-
-let prevTime = 0;
-let angle = 0;
-const angularVelocity = 0.00006;
-
-for (let i = 0; i < numCircles * numSlices; i++) {
-    bin = Math.floor(Math.random() * 61) + 4;
-    bins.push(bin)
-}
-
-for (let i = 0; i < numCircles; i++) {
-    const t = i / (numCircles - 1);
-    lineWidth = customQuadIn(t) * 200 + 10;
-    lineWidths.push(lineWidth);
-}
-
-for (let i = 0; i < numCircles; i++) {
-    const min = Math.PI * -0.25;
-    const max = Math.PI * 0.25;
-    const rand = Math.random() * (max - min) + min;
-    rotationOffsets.push(rand - Math.PI * 0.5);
-}
-
-const sketch = () => {
-    return ({ context, width, height }) => {
-        context.clearRect(0, 0, width, height);
-        context.fillStyle = 'transparent';
-        context.fillRect(0, 0, width, height);
-
-        if (!audioContext) return;
-
-        analyserNode.getFloatFrequencyData(audioData);
-
-        const currentTime = performance.now();
-        const deltaTime = currentTime - prevTime;
-        prevTime = currentTime;
-
-        angle += angularVelocity * deltaTime;
-
-        context.save();
-        context.translate(width * 0.5, height * 0.5);
-        context.rotate(angle);
-        context.scale(1, -1);
-
-        let cradius = radius;
-
-        for (let i = 0; i < numCircles; i++) {
-            context.save();
-            context.rotate(rotationOffsets[i]);
-
-            cradius += lineWidths[i] * 0.5 + 2;
-
-            for (let j = 0; j < numSlices; j++) {
-                context.rotate(slice);
-                context.lineWidth = lineWidths[i];
-
-                bin = bins[i * numSlices + j];
-
-                mapped = mapRange(audioData[bin], minDb, maxDb, 0, 1, true);
-                lineWidth = lineWidths[i] * mapped;
-
-                phi = slice * mapped;
-
-                context.beginPath();
-                context.lineWidth = lineWidth;
-                context.arc(0, 0, cradius, 0, phi);
-                context.stroke();
-            }
-
-            cradius += lineWidths[i] * 0.5;
-
-            context.restore();
-        }
-
-        context.restore();
-    };
-};
-
-const initializeAudioAnalyzer = () => {
-    audio = document.querySelector('audio');
-    audio.volume = volumeControl.value / 100;
-
-    audioContext = new AudioContext();
-
-    sourceNode = audioContext.createMediaElementSource(audio);
-    sourceNode.connect(audioContext.destination);
-
-    analyserNode = audioContext.createAnalyser();
-    analyserNode.fftSize = 512;
-    analyserNode.smoothingTimeConstant = 0.95;
-    sourceNode.connect(analyserNode);
-
-    minDb = analyserNode.minDecibels;
-    maxDb = analyserNode.maxDecibels;
-
-    audioData = new Float32Array(analyserNode.frequencyBinCount);
-}
-
-function mapRange(value, inputMin, inputMax, outputMin, outputMax, clamp) {
-    const mapped = (value - inputMin) / (inputMax - inputMin) * (outputMax - outputMin) + outputMin;
-    return clamp ? Math.min(outputMax, Math.max(outputMin, mapped)) : mapped;
-}
-
-function customQuadIn(t) {
-    return t * t;
-}
-
-const start = async () => {
-    const animate = () => {
-        sketch()({ context, width, height });
-        requestAnimationFrame(animate);
-    };
-    animate();
-}
-
-start();
-
-// FIN CANVAS // FIN CANVAS // FIN CANVAS // FIN CANVAS // FIN CANVAS // FIN CANVAS // FIN CANVAS // FIN CANVAS
-
 const musicPlayer = document.querySelector('audio');
 const musicTitle = document.querySelector('.music-title');
 const artistName = document.querySelector('.artist-name');
 const thumbnail = document.querySelector('.thumbnail');
 const indexTxt = document.querySelector(".current-index");
-
-let currentMusicIndex = 1;
-
-populateUI(musicsData[currentMusicIndex - 1]);
-
 const playBtn = document.querySelector('.play-btn');
+const displayCurrentTime = document.querySelector('.current-time');
+const durationTime = document.querySelector('.duration-time');
+const progressBar = document.querySelector('.progress-bar');
+const progressBarContainer = document.querySelector(".progress-container");
+const nextBtn = document.querySelector('.next-btn');
+const prevBtn = document.querySelector('.prev-btn');
+const playlist = document.querySelector('.playlist');
+const shuffleButtons = document.querySelectorAll(".shuffle-btn");
+const showPlaylistBtn = document.querySelector(".show-playlist-btn");
+const playlistContainer = document.querySelector(".top-info");
+const volumeControl = document.querySelector(".volume-control");
 
-playBtn.addEventListener('click', handlePlayPause);
+// Variables
+let currentMusicIndex = 1;
+let current;
+let totalDuration;
+let rect = progressBarContainer.getBoundingClientRect();
+let progressWidth = rect.width;
+let shuffle = false;
+let shuffledMusicsData = musicsData.slice();
+
+// Functions
+function populateUI({ title, artist }) {
+    const formattedTitle = title.replace(/ /g, '-');
+    musicTitle.textContent = title;
+    artistName.textContent = artist;
+    thumbnail.src = `assets/images/thumbnails/${formattedTitle}.jpg`;
+    musicPlayer.src = `assets/audio/${formattedTitle}.mp3`;
+    indexTxt.textContent = `${currentMusicIndex}/${musicsData.length}`;
+}
 
 function handlePlayPause() {
     if (!audioContext) initializeAudioAnalyzer();
@@ -182,15 +66,6 @@ function pause() {
     musicPlayer.pause();
 }
 
-const displayCurrentTime = document.querySelector('.current-time');
-const durationTime = document.querySelector('.duration-time');
-const progressBar = document.querySelector('.progress-bar');
-
-musicPlayer.addEventListener("loadeddata", fillDurationVariables);
-
-let current;
-let totalDuration;
-
 function fillDurationVariables() {
     current = musicPlayer.currentTime;
     totalDuration = musicPlayer.duration;
@@ -210,8 +85,6 @@ function formatValue(val, element) {
     element.textContent = `${currentMin}:${currentSec}`;
 }
 
-musicPlayer.addEventListener("timeupdate", updateProgress);
-
 function updateProgress(e) {
     current = e.srcElement.currentTime;
     formatValue(current, displayCurrentTime);
@@ -220,39 +93,84 @@ function updateProgress(e) {
     progressBar.style.transform = `scaleX(${progressValue})`;
 }
 
-const progressBarContainer = document.querySelector(".progress-container");
-
-progressBarContainer.addEventListener("click", setProgress);
-
-let rect = progressBarContainer.getBoundingClientRect();
-let progressWidth = rect.width;
-
 function setProgress(e) {
     const x = e.clientX - rect.left;
     musicPlayer.currentTime = (x / progressWidth) * totalDuration;
 }
 
-const nextBtn = document.querySelector('.next-btn');
-const prevBtn = document.querySelector('.prev-btn');
+function changeSong(e) {
+    e.target.classList.contains("next-btn") || e.type === "ended" ? currentMusicIndex++ : currentMusicIndex--;
 
-[prevBtn, nextBtn].forEach(btn => btn.addEventListener("click", changeSong));
-musicPlayer.addEventListener("ended", changeSong);
+    if (currentMusicIndex < 1) {
+        currentMusicIndex = shuffledMusicsData.length;
+    }
+    else if (currentMusicIndex > shuffledMusicsData.length) {
+        currentMusicIndex = 1;
+    }
 
-const shuffleButtons = document.querySelectorAll(".shuffle-btn");
-shuffleButtons.forEach(shuffleBtn => {
-    shuffleBtn.addEventListener("click", shufflePlaylist);
-});
+    populateUI(shuffledMusicsData[currentMusicIndex - 1]);
+    if (!audioContext) initializeAudioAnalyzer();
+    play();
 
-let shuffle = false;
-let shuffledMusicsData = musicsData.slice();
+    if (currentlyPlayingItem !== null) {
+        currentlyPlayingItem.querySelector('img').classList.remove("hidden")
+        currentlyPlayingItem.querySelector(".currently-playing-animation").classList.remove("visible")
+    }
+    currentlyPlayingItem = playlistItems[currentMusicIndex - 1];
+    currentlyPlayingItem.querySelector('img').classList.add("hidden")
+    currentlyPlayingItem.querySelector(".currently-playing-animation").classList.add("visible")
+}
 
-function populateUI({ title, artist }) {
-    const formattedTitle = title.replace(/ /g, '-');
-    musicTitle.textContent = title;
-    artistName.textContent = artist;
-    thumbnail.src = `assets/images/${formattedTitle}.jpg`;
-    musicPlayer.src = `assets/audio/${formattedTitle}.mp3`;
-    indexTxt.textContent = `${currentMusicIndex}/${musicsData.length}`;
+function setupPlaylist() {
+    playlistItems.forEach((playlistItem) => {
+        playlistItem.addEventListener("click", () => {
+            if (currentlyPlayingItem !== null) {
+                currentlyPlayingItem.querySelector('img').classList.remove("hidden")
+                currentlyPlayingItem.querySelector(".currently-playing-animation").classList.remove("visible")
+            }
+            const itemIndex = playlistItem.getAttribute("data-index");
+            currentMusicIndex = parseInt(itemIndex) + 1;
+            const itemData = shuffledMusicsData[itemIndex];
+            populateUI(itemData);
+            if (!audioContext) initializeAudioAnalyzer();
+            play();
+            playlistItem.querySelector('img').classList.add("hidden")
+            playlistItem.querySelector(".currently-playing-animation").classList.add("visible")
+            currentlyPlayingItem = playlistItem;
+
+            playlistContainer.classList.toggle("hide-playlist")
+        });
+    });
+}
+
+function displayPlaylist() {
+    playlist.innerHTML = ""; // Clear the current playlist
+    shuffledMusicsData.forEach((musicData, index) => {
+        const playlistItem = document.createElement("li");
+        playlistItem.setAttribute("data-index", index);
+        playlistItem.className = "playlist-item";
+        const playlistItemThumbnail = document.createElement("img");
+        playlistItemThumbnail.className = "playlist-item-thumbnail";
+        formattedTitle = musicData.title.replace(/ /g, '-');
+        playlistItemThumbnail.src = `assets/images/thumbnails/${formattedTitle}.jpg`;
+        playlistItem.appendChild(playlistItemThumbnail);
+        const playlistItemInfo = document.createElement("h3");
+        playlistItemInfo.className = "playlist-item-info";
+        playlistItemInfo.textContent = musicData.title + " - ";
+        playlistItemInfo.textContent += musicData.artist;
+        const currentlyPlayingAnimation = document.createElement("div");
+        currentlyPlayingAnimation.className = "currently-playing-animation";
+        for (let i = 0; i < 4; i++) {
+            const currentlyPlayingAnimationBar = document.createElement("div");
+            currentlyPlayingAnimationBar.className = "currently-playing-animation-bar";
+            currentlyPlayingAnimation.appendChild(currentlyPlayingAnimationBar);
+        }
+        playlistItem.appendChild(currentlyPlayingAnimation);
+        playlistItem.appendChild(playlistItemInfo);
+        playlist.appendChild(playlistItem);
+    });
+    playlistItems = document.querySelectorAll('.playlist-item');
+    setupPlaylist();
 }
 
 function shufflePlaylist() {
@@ -279,100 +197,49 @@ function shufflePlaylist() {
     displayPlaylist();
     if (currentlyPlayingItem !== null) {
         currentlyPlayingItem.querySelector('img').classList.remove("hidden")
-        currentlyPlayingItem.querySelector(".loading").classList.remove("visible")
+        currentlyPlayingItem.querySelector(".currently-playing-animation").classList.remove("visible")
     }
     currentlyPlayingItem = playlistItems[currentMusicIndex - 1];
     currentlyPlayingItem.querySelector('img').classList.add("hidden")
-    currentlyPlayingItem.querySelector(".loading").classList.add("visible")
+    currentlyPlayingItem.querySelector(".currently-playing-animation").classList.add("visible")
 }
 
-function changeSong(e) {
-    e.target.classList.contains("next-btn") || e.type === "ended" ? currentMusicIndex++ : currentMusicIndex--;
-
-    if (currentMusicIndex < 1) {
-        currentMusicIndex = shuffledMusicsData.length;
+function togglePlaylistContainer() {
+    if (!playlistContainer.classList.contains("show-playlist")) {
+      playlistContainer.classList.toggle("show-playlist");
+    } else {
+      playlistContainer.classList.toggle("hide-playlist");
     }
-    else if (currentMusicIndex > shuffledMusicsData.length) {
-        currentMusicIndex = 1;
+  }
+
+function handleVolumeChange(e) {
+    if (audio) {
+      audio.volume = e.currentTarget.value / 100;
     }
+  }
 
-    populateUI(shuffledMusicsData[currentMusicIndex - 1]);
-    if (!audioContext) initializeAudioAnalyzer();
-    play();
+// Event listeners
+playBtn.addEventListener('click', handlePlayPause);
+musicPlayer.addEventListener("loadeddata", fillDurationVariables);
+musicPlayer.addEventListener("timeupdate", updateProgress);
+progressBarContainer.addEventListener("click", setProgress);
+[prevBtn, nextBtn].forEach(btn => btn.addEventListener("click", changeSong));
+musicPlayer.addEventListener("ended", changeSong);
+shuffleButtons.forEach(shuffleBtn => {
+    shuffleBtn.addEventListener("click", shufflePlaylist);
+});
+volumeControl.addEventListener("mousemove", handleVolumeChange);
+showPlaylistBtn.addEventListener("click", togglePlaylistContainer);
 
-    if (currentlyPlayingItem !== null) {
-        currentlyPlayingItem.querySelector('img').classList.remove("hidden")
-        currentlyPlayingItem.querySelector(".loading").classList.remove("visible")
-    }
-    currentlyPlayingItem = playlistItems[currentMusicIndex - 1];
-    currentlyPlayingItem.querySelector('img').classList.add("hidden")
-    currentlyPlayingItem.querySelector(".loading").classList.add("visible")
-}
-
-const playlist = document.querySelector('.playlist');
-let playlistItems = null;
-let currentlyPlayingItem = null;
-
-function displayPlaylist() {
-    playlist.innerHTML = ""; // Clear the current playlist
-    shuffledMusicsData.forEach((musicData, index) => {
-        const playlistItem = document.createElement("li");
-        playlistItem.setAttribute("data-index", index);
-        playlistItem.className = "playlist-item";
-        const playlistItemThumbnail = document.createElement("img");
-        playlistItemThumbnail.className = "playlist-item-thumbnail";
-        formattedTitle = musicData.title.replace(/ /g, '-');
-        playlistItemThumbnail.src = `assets/images/${formattedTitle}.jpg`;
-        playlistItem.appendChild(playlistItemThumbnail);
-        const playlistItemInfo = document.createElement("h3");
-        playlistItemInfo.className = "playlist-item-info";
-        playlistItemInfo.textContent = musicData.title + " - ";
-        playlistItemInfo.textContent += musicData.artist;
-        const loadingDiv = document.createElement("div");
-        loadingDiv.className = "loading";
-        for (let i = 0; i < 4; i++) {
-            const loadDiv = document.createElement("div");
-            loadDiv.className = "load";
-            loadingDiv.appendChild(loadDiv);
-        }
-        playlistItem.appendChild(loadingDiv);
-        playlistItem.appendChild(playlistItemInfo);
-        playlist.appendChild(playlistItem);
-    });
-    playlistItems = document.querySelectorAll('.playlist-item');
-    setupPlaylist();
-}
-
-function setupPlaylist() {
-    playlistItems.forEach((playlistItem) => {
-        playlistItem.addEventListener("click", () => {
-            if (currentlyPlayingItem !== null) {
-                currentlyPlayingItem.querySelector('img').classList.remove("hidden")
-                currentlyPlayingItem.querySelector(".loading").classList.remove("visible")
-            }
-            const itemIndex = playlistItem.getAttribute("data-index");
-            currentMusicIndex = parseInt(itemIndex) + 1;
-            const itemData = shuffledMusicsData[itemIndex];
-            populateUI(itemData);
-            if (!audioContext) initializeAudioAnalyzer();
-            play();
-            playlistItem.querySelector('img').classList.add("hidden")
-            playlistItem.querySelector(".loading").classList.add("visible")
-            currentlyPlayingItem = playlistItem;
-        });
-    });
-}
+// Initialize
+populateUI(musicsData[currentMusicIndex - 1]);
 
 displayPlaylist();
 
 const firstPlaylistItem = document.querySelector('.playlist-item');
-firstPlaylistItem.querySelector('img').classList.add("hidden")
-firstPlaylistItem.querySelector(".loading").classList.add("visible")
+firstPlaylistItem.querySelector('img').classList.add("hidden");
+firstPlaylistItem.querySelector(".currently-playing-animation").classList.add("visible");
 currentlyPlayingItem = firstPlaylistItem;
 
-const volumeControl = document.querySelector(".volume-control");
-volumeControl.addEventListener("mousemove", function (e) {
-    if (audio) {
-        audio.volume = e.currentTarget.value / 100;
-    }
-})
+
+

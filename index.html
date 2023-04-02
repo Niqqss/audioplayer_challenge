@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Audio player</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://kit.fontawesome.com/cd6a5f940b.js" crossorigin="anonymous"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -22,7 +22,7 @@
         <div class="border-container">
             <div class="audio-player">
                 <div class="thumbnail-container">
-                    <img src="assets/images/I-Feel-Fantastic.jpg" alt="album thumbnail" class="thumbnail">
+                    <img src="assets/images/thumbnails/I-Feel-Fantastic.jpg" alt="album thumbnail" class="thumbnail">
                     <canvas width="1450" height="1450"></canvas>
                 </div>
                 <div class="top-info">
@@ -31,12 +31,12 @@
                     </div>
                 </div>
                 <div class="music-info">
-                    <h2 class="music-title"></h2>
-                    <h3 class="artist-name"></h3>
+                    <h2 class="music-title">I Feel Fantastic</h2>
+                    <h3 class="artist-name">Riovaz</h3>
                     <p class="current-index">
                         <span>1</span>/6
                     </p>
-                    <audio src="assets/audio/Fantastic.mp3"></audio>
+                    <audio src="assets/audio/I-Feel-Fantastic.mp3"></audio>
                     <div class="progress-container">
                         <div class="progress-bar"></div>
                         <span class="time-indicator current-time">0:00</span>
@@ -54,13 +54,14 @@
                                 <input type="range" class="volume-control">
                                 <i class="fa-solid fa-volume-high"></i>
                             </div>
-                            <button class="show-playlist mobile"><i class="fa-solid fa-list"></i></button>
+                            <button class="show-playlist-btn mobile"><i class="fa-solid fa-list"></i></button>
                         </div>
                     </nav>
                 </div>
             </div>
         </div>
     </main>
+    <script src="canvas.js"></script>
     <script src="script.js"></script>
 </body>
 
